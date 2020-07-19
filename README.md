@@ -7,7 +7,7 @@
 
 ## Usage
 
-```$ python3 main.py filename```
+```$ python3 main.py filename [psnr/ssim]```
 
 ## Example
 
