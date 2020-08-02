@@ -16,7 +16,7 @@
 ## Example
 
 ### `psnr.py`
-![psnr](example-psnr.png)
+![psnr](example/psnr.png)
 
 ### `multi.py`
-![multi](example-multi.png)
+![multi](example/multi.png)
