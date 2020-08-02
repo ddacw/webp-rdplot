@@ -32,7 +32,7 @@ def main():
     filename = sys.argv[1]
     estimator = 'psnr'
     if len(sys.argv) == 3:
-        assert sys.argv[2] in ['psnr', 'ssim']
+        assert sys.argv[2] in ['psnr', 'ssim'], "Invalid estimator."
         estimator = sys.argv[2]
 
     im = Image.open(filename)
