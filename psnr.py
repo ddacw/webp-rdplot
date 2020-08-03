@@ -9,10 +9,10 @@ from PIL import Image
 
 def process_q(filename, q, m, estimator):
     """Returns the file size and PSNR value for compression factor q."""
-    cmd = 'cwebp -q {0} -m {1} -print_{2} -short -mt {3}'.format(
+    cmd = "cwebp -q {0} -m {1} -print_{2} -short -mt {3}".format(
         q, m, estimator, filename)
     completed = subprocess.run(cmd, shell=True, capture_output=True)
-    info = re.search(r'\d+ \d+.\d+', str(completed.stderr)).group(0).split(' ')
+    info = re.search(r"\d+ \d+.\d+", str(completed.stderr)).group(0).split(" ")
     return int(info[0]), float(info[1])
 
 
@@ -30,9 +30,9 @@ def process_m(filename, m, pixel_count, estimator):
 
 def main():
     filename = sys.argv[1]
-    estimator = 'psnr'
+    estimator = "psnr"
     if len(sys.argv) == 3:
-        assert sys.argv[2] in ['psnr', 'ssim'], "Invalid estimator."
+        assert sys.argv[2] in ["psnr", "ssim"], "Invalid estimator."
         estimator = sys.argv[2]
 
     im = Image.open(filename)
@@ -41,10 +41,10 @@ def main():
 
     for m in methods:
         bitrate, psnr = process_m(filename, m, w * h, estimator)
-        plt.plot(bitrate, psnr, label='m={}'.format(m))
+        plt.plot(bitrate, psnr, label="m={}".format(m))
 
-    plt.legend(loc='lower right')
-    plt.xlabel('Bitrate')
+    plt.legend(loc="lower right")
+    plt.xlabel("Bitrate")
     plt.ylabel(estimator.upper())
     plt.show()
 
