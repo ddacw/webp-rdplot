@@ -9,7 +9,7 @@ from PIL import Image
 
 def process_q(filename, q, m, estimator):
     """Returns the file size and PSNR value for compression factor q."""
-    cmd = "cwebp -q {0} -m {1} -print_{2} -short -mt {3}".format(
+    cmd = "cwebp -q {0} -m {1} -print_{2} -short {3}".format(
         q, m, estimator, filename)
     completed = subprocess.run(cmd, shell=True, capture_output=True)
     info = re.search(r"\d+ \d+.\d+", str(completed.stderr)).group(0).split(" ")
@@ -25,6 +25,7 @@ def process_m(filename, m, pixel_count, estimator):
         _size, _psnr = process_q(filename, q, m, estimator)
         bitrate.append(_size / pixel_count)
         psnr.append(_psnr)
+    print("{} finished".format(filename))
     return bitrate, psnr
 
 
