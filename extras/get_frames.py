@@ -49,7 +49,7 @@ class Getter:
 
         with open("{}-list.txt".format(self.outfile), "w") as frame_list:
             clip = VideoFileClip("{}-trimmed.mp4".format(self.outfile))
-            for i, t in enumerate(np.arange(0, clip.duration, 1/self.fps)):
+            for i, t in enumerate(np.arange(0, self.end_time-self.start_time, 1/self.fps)):
                 frame_filename = "{0}/{0}_{1}.jpeg".format(self.outfile, i)
                 clip.save_frame(frame_filename, t)
                 frame_list.write("{} {}\n".format(frame_filename, int(t*1000)))
