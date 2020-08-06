@@ -26,7 +26,7 @@ class Getter:
         """Downloads video from Youtube with given quality."""
         yt = YouTube(self.url)
         videos = yt.streams.filter(
-            file_extension="mp4", progressive=True, resolution=self.res)
+            file_extension="mp4", resolution=self.res)
         assert len(videos) > 0, "Video unavailable."
 
         if not os.path.exists("{}.mp4".format(self.outfile)):
