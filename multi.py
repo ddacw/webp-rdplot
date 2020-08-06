@@ -36,10 +36,10 @@ def main():
         p50 = sz // 2
         p75 = 3 * sz // 4
 
-        plt.plot(bitrate[:p25+1], psnr[:p25+1], color="red")
-        plt.plot(bitrate[p25:p50+1], psnr[p25:p50+1], color="green")
-        plt.plot(bitrate[p50:p75+1], psnr[p50:p75+1], color="blue")
-        plt.plot(bitrate[p75:], psnr[p75:], color="black")
+        plt.plot(bitrate[:p25+1], psnr[:p25+1], color="midnightblue")
+        plt.plot(bitrate[p25:p50+1], psnr[p25:p50+1], color="mediumblue")
+        plt.plot(bitrate[p50:p75+1], psnr[p50:p75+1], color="dodgerblue")
+        plt.plot(bitrate[p75:], psnr[p75:], color="skyblue")
 
     plt.xlabel("Bitrate")
     plt.ylabel(estimator.upper())
