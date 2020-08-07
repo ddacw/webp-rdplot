@@ -8,7 +8,8 @@ import numpy as np
 
 from pytube import YouTube
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
-from moviepy.editor import VideoFileClip
+from moviepy.video.io.VideoFileClip import VideoFileClip
+from moviepy.video.fx.resize import resize
 
 
 class Getter:
@@ -45,8 +46,9 @@ class Getter:
         """Creates list of frames with timestamps + directory of frames."""
         with open("{}-list.txt".format(self.outfile), "w") as frame_list:
             clip = VideoFileClip("{}-trimmed.mp4".format(self.outfile))
+            clip = clip.fx(resize, height=180)
             for i, t in enumerate(np.arange(0, self.end_time-self.start_time, 1/self.fps)):
-                frame_filename = "{0}/{0}_{1}.jpeg".format(self.outfile, i)
+                frame_filename = "{0}/{0}_{1}.png".format(self.outfile, i)
                 clip.save_frame(frame_filename, t)
                 frame_list.write("{} {}\n".format(frame_filename, int(t*1000)))
 
