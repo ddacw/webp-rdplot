@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 
 import os
+import shutil
 import sys
 
 import numpy as np
 
 from pytube import YouTube
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
-from moviepy.editor import *
+from moviepy.editor import VideoFileClip
 
 
 class Getter:
-    def __init__(self, url, outfile, res="360p", start_time=0, end_time=10, fps=5):
+    def __init__(self, url, outfile, res, start_time, end_time, fps):
         self.url = url
         self.outfile = outfile
         self.res = res
@@ -42,17 +43,16 @@ class Getter:
 
     def get_frames(self):
         """Creates list of frames with timestamps + directory of frames."""
-        try:
-            os.mkdir(self.outfile)
-        except OSError:
-            print("Creating directory failed.")
-
         with open("{}-list.txt".format(self.outfile), "w") as frame_list:
             clip = VideoFileClip("{}-trimmed.mp4".format(self.outfile))
             for i, t in enumerate(np.arange(0, self.end_time-self.start_time, 1/self.fps)):
                 frame_filename = "{0}/{0}_{1}.jpeg".format(self.outfile, i)
                 clip.save_frame(frame_filename, t)
                 frame_list.write("{} {}\n".format(frame_filename, int(t*1000)))
+
+    def move_files(self):
+        shutil.move("{}.mp4".format(self.outfile), self.outfile)
+        shutil.move("{}-trimmed.mp4".format(self.outfile), self.outfile)
 
 
 def main():
@@ -63,8 +63,8 @@ def main():
 
     resolution = "360p"
     start_time = 0
-    end_time = 5
-    fps = 5
+    end_time = 3
+    fps = 8
 
     if len(sys.argv) >= 4:
         resolution = sys.argv[3].strip()
@@ -73,13 +73,21 @@ def main():
     if len(sys.argv) >= 6:
         start_time = float(sys.argv[4])
         end_time = float(sys.argv[5])
+        assert start_time <= end_time, "Invalid timestamps."
     if len(sys.argv) >= 7:
         fps = int(sys.argv[6])
+
+    try:
+        shutil.rmtree(outfile)
+    except OSError:
+        pass
+    os.mkdir(outfile)
 
     getter = Getter(url, outfile, resolution, start_time, end_time, fps)
     getter.get_video()
     getter.get_extract()
     getter.get_frames()
+    getter.move_files()
 
 
 if __name__ == "__main__":

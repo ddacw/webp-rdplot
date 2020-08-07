@@ -25,7 +25,6 @@ def process_m(filename, m, pixel_count, estimator):
         _size, _psnr = process_q(filename, q, m, estimator)
         bitrate.append(_size / pixel_count)
         psnr.append(_psnr)
-    print("{} finished".format(filename))
     return bitrate, psnr
 
 

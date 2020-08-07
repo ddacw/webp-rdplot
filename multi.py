@@ -26,8 +26,8 @@ def main():
         estimator = sys.argv[2]
 
     pool = multiprocessing.Pool(multiprocessing.cpu_count())
-    data = pool.starmap(get_data, [(directory, filename, estimator)
-                                   for filename in os.listdir(directory)])
+    data = pool.starmap(get_data, [(directory, filename, estimator) for filename in os.listdir(
+        directory) if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif'))])
     pool.close()
 
     for bitrate, psnr in data:
@@ -41,6 +41,7 @@ def main():
         plt.plot(bitrate[p50:p75+1], psnr[p50:p75+1], color="dodgerblue")
         plt.plot(bitrate[p75:], psnr[p75:], color="skyblue")
 
+    plt.title(directory)
     plt.xlabel("Bitrate")
     plt.ylabel(estimator.upper())
     plt.show()
