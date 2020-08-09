@@ -30,12 +30,8 @@ class Getter:
         videos = yt.streams.filter(
             file_extension="mp4", resolution=self.res)
         assert len(videos) > 0, "Video unavailable."
-
-        if not os.path.exists("{}.mp4".format(self.outfile)):
-            videos[0].download(filename=self.outfile)
-            print("Downloaded.")
-        else:
-            print("File already existed.")
+        videos[0].download(filename=self.outfile)
+        print("Download complete.")
 
     def get_extract(self):
         """Trims videos for specified duration (in seconds)."""
@@ -53,7 +49,7 @@ class Getter:
                 frame_list.write("{} {}\n".format(frame_filename, int(t*1000)))
 
     def move_files(self):
-        shutil.move("{}.mp4".format(self.outfile), self.outfile)
+        os.remove("{}.mp4".format(self.outfile))
         shutil.move("{}-trimmed.mp4".format(self.outfile), self.outfile)
 
 
