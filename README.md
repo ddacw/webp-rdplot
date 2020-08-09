@@ -8,10 +8,10 @@
 ## Usage
 
 ### Display the RD curve for a single image
-```$ python psnr.py filename [psnr/ssim]```
+```$ python psnr.py filename [{psnr/ssim}]```
 
 ### Display RD curves for a directory containing images
-```$ python multi.py directory [psnr/ssim]```
+```$ python multi.py directory [{psnr/ssim} {quality}]```
 
 ## Extras
 
