@@ -10,7 +10,6 @@ from psnr import process_m, process_q
 
 def get_data(directory, filename, estimator):
     """Returns the bitrate and psnr data for a single image."""
-    print(filename)
     filename = directory + "/" + filename
     im = Image.open(filename)
     w, h = im.size
@@ -37,14 +36,17 @@ def plot_multi(directory, estimator):
         plt.plot(bitrate[p75:], psnr[p75:], color="skyblue")
 
 
-def plot_q(directory, quality, estimator):
+def plot_q(directory, estimator, quality):
     """Plots bitrate-PSNR at fixed quality for all images in directory."""
     for filename in os.listdir(directory):
         if not filename.lower().endswith((".png", ".jpg", ".jpeg", ".tiff", ".bmp", ".gif")):
             continue
+
+        # get id of img
+        i = int(filename.split(".")[0].split("_")[1])
         method = 4
         filename = directory + "/" + filename
-        sz, psnr = process_q(filename, quality, method, estimator)
+        sz, psnr = process_q(filename, quality[i], method, estimator)
         im = Image.open(filename)
         bitrate = sz / (im.size[0] * im.size[1])
         plt.plot(bitrate, psnr, ".", color="r")
@@ -53,18 +55,21 @@ def plot_q(directory, quality, estimator):
 def main():
     directory = sys.argv[1]
     estimator = "psnr"
-    quality_highlight = 50
+    quality = []
 
     if len(sys.argv) == 3:
         assert sys.argv[2] in ["psnr", "ssim"], "Invalid estimator."
         estimator = sys.argv[2]
 
-    if len(sys.argv) == 4:
-        assert 0 <= int(sys.argv[3]) <= 100, "Invalid quality."
-        quality_highlight = int(sys.argv[3])
-
+    print("Multi started.")
     plot_multi(directory, estimator)
-    plot_q(directory, quality_highlight, estimator)
+    print("Multi completed.")
+
+    if len(sys.argv) == 4:
+        assert sys.argv[3] == "q"
+        print("Enter quality for each frame:")
+        quality = list(map(int, input().split()))
+        plot_q(directory, estimator, quality)
 
     plt.title(directory)
     plt.xlabel("Bitrate")
