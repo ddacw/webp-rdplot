@@ -1,3 +1,4 @@
+import os
 import re
 import subprocess
 import sys
@@ -9,11 +10,15 @@ from PIL import Image
 
 def process_q(filename, q, m, estimator):
     """Returns the file size and PSNR value for compression factor q."""
-    cmd = "cwebp -q {0} -m {1} -print_{2} -short {3}".format(
-        q, m, estimator, filename)
-    completed = subprocess.run(cmd, shell=True, capture_output=True)
-    info = re.search(r"\d+ \d+.\d+", str(completed.stderr)).group(0).split(" ")
-    return int(info[0]), float(info[1])
+    filename_webp = filename.split(".")[0] + ".webp"
+    cmd_cwebp = "cwebp -q {} -m {} {} -o {}".format(
+        q, m, filename, filename_webp)
+    cmd_disto = "get_disto -{} {} {}".format(
+        estimator, filename_webp, filename)
+    subprocess.run(cmd_cwebp, shell=True, stderr=subprocess.DEVNULL)
+    disto = subprocess.run(cmd_disto, shell=True, capture_output=True)
+    sz, psnr = re.search(r"\d+ \d+.\d+", str(disto.stdout)).group(0).split(" ")
+    return int(sz), float(psnr)
 
 
 def process_m(filename, m, pixel_count, estimator):
