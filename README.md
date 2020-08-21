@@ -18,10 +18,10 @@
 * ### `get_frames.py`
   **Requirements**: numpy, pytube3, moviepy
 
-  ```$ python get_frames.py [-h] [-r RES] [-s START] [-e END] [-f FPS] url title```
+  ```$ python get_frames.py [-h] [-r RES] [-s START] [-d DURATION] [-f FPS] url title```
 
   **Example:** 
-  `$ python get_frames.py -r 720p -s 70 -e 80 -f 5 https://youtu.be/g4Hbz2jLxvQ sample`
+  `$ python get_frames.py -r 720p -s 70 -d 8 -f 0.5 https://youtu.be/g4Hbz2jLxvQ sample`
 
 
 ## Example

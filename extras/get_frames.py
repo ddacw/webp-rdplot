@@ -65,9 +65,9 @@ def main():
     parser.add_argument("-r", "--res", default="360p", help="video resolution")
     parser.add_argument("-s", "--start", type=int, default=0,
                         help="starting timestamp of the video extract")
-    parser.add_argument("-e", "--end", type=int, default=3,
-                        help="ending timestamp of the video extract")
-    parser.add_argument("-f", "--fps", type=int, default=8,
+    parser.add_argument("-d", "--duration", type=int, default=3,
+                        help="duration of the video extract")
+    parser.add_argument("-f", "--fps", type=float, default=8,
                         help="frames per second")
 
     args = parser.parse_args()
@@ -79,8 +79,10 @@ def main():
     assert resolution in ["1080p", "720p", "480p",
                           "360p", "240p", "144p"], "Invalid resolution."
     start_time = args.start
-    end_time = args.end
-    assert start_time <= end_time, "Invalid timestamps."
+    assert start_time >= 0, "Invalid start time."
+    duration = args.duration
+    assert duration >= 0, "Invalid duration."
+    end_time = start_time + duration
     fps = args.fps
     assert fps > 0, "Invalid frame rate."
 
