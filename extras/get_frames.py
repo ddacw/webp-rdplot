@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import argparse
 import os
 import shutil
 import sys
@@ -54,29 +55,38 @@ class Getter:
 
 
 def main():
-    assert len(sys.argv) >= 3, "Insufficient arguments."
+    parser = argparse.ArgumentParser(description=""" 
+        Extracts frames from Youtube videos.
+    """)
 
-    url = sys.argv[1].strip()
-    outfile = sys.argv[2].strip()
+    parser.add_argument("url", help="video URL")
+    parser.add_argument("title", help="custom video title")
 
-    resolution = "360p"
-    start_time = 0
-    end_time = 3
-    fps = 8
+    parser.add_argument("-r", "--res", default="360p", help="video resolution")
+    parser.add_argument("-s", "--start", type=int, default=0,
+                        help="starting timestamp of the video extract")
+    parser.add_argument("-e", "--end", type=int, default=3,
+                        help="ending timestamp of the video extract")
+    parser.add_argument("-f", "--fps", type=int, default=8,
+                        help="frames per second")
 
-    if len(sys.argv) >= 4:
-        resolution = sys.argv[3].strip()
-        assert resolution in ["1080p", "720p", "480p",
-                              "360p", "240p", "144p"], "Invalid resolution."
-    if len(sys.argv) >= 6:
-        start_time = float(sys.argv[4])
-        end_time = float(sys.argv[5])
-        assert start_time <= end_time, "Invalid timestamps."
-    if len(sys.argv) >= 7:
-        fps = int(sys.argv[6])
+    args = parser.parse_args()
+
+    url = args.url
+    outfile = args.title
+
+    resolution = args.res
+    assert resolution in ["1080p", "720p", "480p",
+                          "360p", "240p", "144p"], "Invalid resolution."
+    start_time = args.start
+    end_time = args.end
+    assert start_time <= end_time, "Invalid timestamps."
+    fps = args.fps
+    assert fps > 0, "Invalid frame rate."
 
     try:
         shutil.rmtree(outfile)
+        print("Existing directory removed.")
     except OSError:
         pass
     os.mkdir(outfile)

@@ -11,17 +11,17 @@
 ```$ python psnr.py filename [{psnr/ssim}]```
 
 ### Display RD curves for a directory containing images
-```$ python multi.py directory [{psnr/ssim} {quality}]```
+```$ python multi.py directory [{psnr/ssim} {q}]```
 
 ## Extras
 
 * ### `get_frames.py`
   **Requirements**: numpy, pytube3, moviepy
 
-  ```$ python get_frames.py {url} {outfile} [{resolution} {start} {end} {fps}]```
+  ```$ python get_frames.py [-h] [-r RES] [-s START] [-e END] [-f FPS] url title```
 
   **Example:** 
-  `$ python get_frames.py https://youtu.be/g4Hbz2jLxvQ spi1 720p 79 89 6`
+  `$ python get_frames.py -r 720p -s 70 -e 80 -f 5 https://youtu.be/g4Hbz2jLxvQ sample`
 
 
 ## Example
