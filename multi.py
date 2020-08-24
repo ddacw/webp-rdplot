@@ -1,3 +1,4 @@
+import argparse
 import multiprocessing
 import os
 import sys
@@ -36,7 +37,7 @@ def plot_multi(directory, estimator):
         plt.plot(bitrate[p75:], psnr[p75:], color="skyblue")
 
 
-def plot_q(directory, estimator, quality):
+def plot_q(directory, estimator, quality, point_color="r"):
     """Plots bitrate-PSNR at fixed quality for all images in directory."""
     for filename in os.listdir(directory):
         if not filename.lower().endswith((".png", ".jpg", ".jpeg", ".tiff", ".bmp", ".gif")):
@@ -46,30 +47,48 @@ def plot_q(directory, estimator, quality):
         i = int(filename.split(".")[0].split("_")[1])
         method = 4
         filename = directory + "/" + filename
-        sz, psnr = process_q(filename, quality[i], method, estimator)
+
+        q = None
+
+        if type(quality) is int:
+            q = quality
+        elif type(quality) is list:
+            q = quality[i]
+
+        sz, psnr = process_q(filename, q, method, estimator)
         im = Image.open(filename)
         bitrate = sz / (im.size[0] * im.size[1])
-        plt.plot(bitrate, psnr, ".", color="r")
+        plt.plot(bitrate, psnr, ".", color=point_color)
 
 
 def main():
-    directory = sys.argv[1]
-    estimator = "psnr"
-    quality = []
+    parser = argparse.ArgumentParser(description="""
+        Display RD curves for all images in a directory.
+    """)
+    parser.add_argument("directory", help="directory containing images")
+    parser.add_argument(
+        "-s", "--ssim", action='store_true', help="use SSIM instead of PSNR")
+    parser.add_argument("-q", "--quality", type=int,
+                        default=None, help="plot points of fixed quality")
+    parser.add_argument("-mq", "--multi_quality", action='store_true',
+                        help="enable plotting points of varied quality values")
 
-    if len(sys.argv) == 3:
-        assert sys.argv[2] in ["psnr", "ssim"], "Invalid estimator."
-        estimator = sys.argv[2]
+    args = parser.parse_args()
+    directory = args.directory
+    estimator = "ssim" if args.ssim else "psnr"
+    quality = args.quality
 
     print("Multi started.")
     plot_multi(directory, estimator)
     print("Multi completed.")
 
-    if len(sys.argv) == 4:
-        assert sys.argv[3] == "q"
-        print("Enter quality for each frame:")
-        quality = list(map(int, input().split()))
-        plot_q(directory, estimator, quality)
+    if quality is not None:
+        plot_q(directory, estimator, quality, "orange")
+
+    if args.multi_quality:
+        print("List of quality values:")
+        multi_quality = list(map(int, input().split()))
+        plot_q(directory, estimator, multi_quality, "r")
 
     plt.title(directory)
     plt.xlabel("Bitrate")

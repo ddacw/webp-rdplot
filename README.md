@@ -11,7 +11,7 @@
 ```$ python psnr.py filename [{psnr/ssim}]```
 
 ### Display RD curves for a directory containing images
-```$ python multi.py directory [{psnr/ssim} {q}]```
+```$ python multi.py [-h] [-s] [-q QUALITY] [-mq] directory```
 
 ## Extras
 
