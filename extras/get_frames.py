@@ -14,16 +14,17 @@ from moviepy.video.fx.resize import resize
 
 
 class Getter:
-    def __init__(self, url, outfile, res, start_time, end_time, fps):
+    def __init__(self, url, outfile, res, start_time, duration, fps, adj_timestamps):
         self.url = url
         self.outfile = outfile
         self.res = res
 
         # in seconds
         self.start_time = start_time
-        self.end_time = end_time
+        self.duration = duration
 
         self.fps = fps
+        self.adj_timestamps = adj_timestamps
 
     def get_video(self):
         """Downloads video from Youtube with given quality."""
@@ -37,17 +38,23 @@ class Getter:
     def get_extract(self):
         """Trims videos for specified duration (in seconds)."""
         ffmpeg_extract_subclip("{}.mp4".format(self.outfile), self.start_time,
-                               self.end_time, targetname="{}-trimmed.mp4".format(self.outfile))
+                               self.start_time + self.duration,
+                               targetname="{}-trimmed.mp4".format(self.outfile))
 
     def get_frames(self):
         """Creates list of frames with timestamps + directory of frames."""
         with open("{}-list.txt".format(self.outfile), "w") as frame_list:
             clip = VideoFileClip("{}-trimmed.mp4".format(self.outfile))
             clip = clip.fx(resize, height=180)
-            for i, t in enumerate(np.arange(0, self.end_time-self.start_time, 1/self.fps)):
+            for i, t in enumerate(np.arange(0, self.duration, 1/self.fps)):
                 frame_filename = "{0}/{0}_{1}.png".format(self.outfile, i)
                 clip.save_frame(frame_filename, t)
-                frame_list.write("{} {}\n".format(frame_filename, int(t*1000)))
+                timestamp = t * 1000
+                if self.adj_timestamps:
+                    timestamp *= 3
+                    timestamp /= self.duration
+                frame_list.write("{} {}\n".format(
+                    frame_filename, int(timestamp)))
 
     def move_files(self):
         os.remove("{}.mp4".format(self.outfile))
@@ -63,12 +70,14 @@ def main():
     parser.add_argument("title", help="custom video title")
 
     parser.add_argument("-r", "--res", default="360p", help="video resolution")
-    parser.add_argument("-s", "--start", type=int, default=0,
+    parser.add_argument("-s", "--start", type=float, default=0,
                         help="starting timestamp of the video extract")
-    parser.add_argument("-d", "--duration", type=int, default=3,
+    parser.add_argument("-d", "--duration", type=float, default=3,
                         help="duration of the video extract")
     parser.add_argument("-f", "--fps", type=float, default=8,
                         help="frames per second")
+    parser.add_argument("-y", "--yt_duration", action='store_true',
+                        help="enable adjusting timestamps to fit a 3-second duration")
 
     args = parser.parse_args()
 
@@ -82,9 +91,9 @@ def main():
     assert start_time >= 0, "Invalid start time."
     duration = args.duration
     assert duration >= 0, "Invalid duration."
-    end_time = start_time + duration
     fps = args.fps
     assert fps > 0, "Invalid frame rate."
+    adj_timestamps = args.yt_duration
 
     try:
         shutil.rmtree(outfile)
@@ -93,7 +102,9 @@ def main():
         pass
     os.mkdir(outfile)
 
-    getter = Getter(url, outfile, resolution, start_time, end_time, fps)
+    getter = Getter(url, outfile, resolution, start_time,
+                    duration, fps, adj_timestamps)
+
     getter.get_video()
     getter.get_extract()
     getter.get_frames()
