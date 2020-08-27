@@ -27,7 +27,7 @@ optional arguments:
 ## Extras
 
 * ### `get_frames.py`:   Extracts frames from Youtube videos.
-  **Requirements**: numpy, pytube3, moviepy
+  **Requirements**: [pytube](https://github.com/nficano/pytube), numpy, moviepy.
 
   `$ python get_frames.py [-h] [-r RES] [-s START] [-d DURATION] [-f FPS] [-y] url title`
 
@@ -43,7 +43,7 @@ optional arguments:
                           starting timestamp of the video extract
     -d DURATION, --duration DURATION
                           duration of the video extract
-    -f FPS, --fps FPS     frames per second
+    -f FPS, --fps FPS     frames gper second
     -y, --yt_duration     enable adjusting timestamps to fit a 3-second duration
   ```
 
