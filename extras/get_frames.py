@@ -50,10 +50,10 @@ class Getter:
                 frame_filename = "{0}/{0}_{1}.png".format(self.outfile, i)
                 clip.save_frame(frame_filename, t)
                 # ending timestamp in millisecond
-                timestamp = (t + 1 / self.fps) * 1000
+                timestamp = (1/self.fps + t) * 1000
 
                 if self.adj_timestamps:
-                    timestamp *= 3 / self.duration  # 3-second duration
+                    timestamp *= 3/self.duration  # 3-second duration
                 frame_list.write("{} {}\n".format(
                     frame_filename, int(timestamp)))
 

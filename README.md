@@ -43,7 +43,7 @@ optional arguments:
                           starting timestamp of the video extract
     -d DURATION, --duration DURATION
                           duration of the video extract
-    -f FPS, --fps FPS     frames gper second
+    -f FPS, --fps FPS     frames per second
     -y, --yt_duration     enable adjusting timestamps to fit a 3-second duration
   ```
 
