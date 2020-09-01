@@ -51,14 +51,14 @@ optional arguments:
   `$ python get_frames.py -s 138 -d 6 -f 4 -y https://youtu.be/C6kn6nXMWF0 sample`
 
 * ### `get_frames_list.py`
-  #### Run `get_frames.py` on a list of YouTube URLs.
+
+  Run `get_frames.py` on a list of YouTube URLs.
+  
   `$ python get_frames_list.py list.txt`
 
 * ### `thumbnailer_compare.py`
 
-  #### Run thumbnail_compare in parallel, on every list of frames in the same directory.
-
-  **Requires**: `thumbnailer_compare`.
+  Run `thumbnailer_compare` in parallel, on every list of frames in the same directory. **Requires**: `thumbnailer_compare`.
 
   `$ python thumbnailer_compare.py`
 
