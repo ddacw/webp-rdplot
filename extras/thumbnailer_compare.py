@@ -38,10 +38,10 @@ def main():
             for k in range(K):
                 methods_stat[k][j][i] = data[i][j][k]
 
-    fig, axs = plt.subplots(2, 2, sharey=True)
+    fig, axs = plt.subplots(2, 2, sharey=True)  # or `sharey="row"`
     titles = ("max_dec", "max_inc", "mean", "median")
     colors = ("r", "g", "black", "black")
-    fig.suptitle("thumbnail_compare")
+    fig.suptitle("thumbnailer_compare")
     for i, title in enumerate(titles):
         x = (i >> 1) & 1
         y = i & 1
@@ -49,6 +49,7 @@ def main():
         axs[x, y].boxplot(methods_stat[i], showfliers=False)
         axs[x, y].set_title(title, color=colors[i])
 
+    plt.tight_layout()
     plt.savefig("Stat.png")
     plt.show()
 
