@@ -59,7 +59,7 @@ class Getter:
 
     def move_files(self):
         os.remove("{}.mp4".format(self.outfile))
-        shutil.move("{}-trimmed.mp4".format(self.outfile), self.outfile)
+        os.remove("{}-trimmed.mp4".format(self.outfile))
 
 
 def main():

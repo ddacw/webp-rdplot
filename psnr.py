@@ -17,7 +17,8 @@ def process_q(filename, q, m, estimator):
         estimator, filename_webp, filename)
     subprocess.run(cmd_cwebp, shell=True, stderr=subprocess.DEVNULL)
     disto = subprocess.run(cmd_disto, shell=True, capture_output=True)
-    sz, psnr = re.search(r"\d+ \d+.\d+", str(disto.stdout)).group(0).split(" ")
+    sz, psnr = re.search(
+        r"\d+ \d+.\d+", (disto.stdout).decode("utf-8")).group(0).split(" ")
     os.remove(filename_webp)
     return int(sz), float(psnr)
 
