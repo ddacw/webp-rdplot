@@ -10,12 +10,10 @@ from psnr import process_m, process_q
 
 
 def get_data(directory, filename, estimator):
-    """Returns the bitrate and psnr data for a single image."""
+    """Returns the filesize and psnr data for a single image."""
     filename = directory + "/" + filename
-    im = Image.open(filename)
-    w, h = im.size
     method = 4
-    return process_m(filename, method, w * h, estimator)
+    return process_m(filename, method, estimator)
 
 
 def plot_multi(directory, estimator):
@@ -25,20 +23,22 @@ def plot_multi(directory, estimator):
         directory) if filename.lower().endswith((".png", ".jpg", ".jpeg", ".tiff", ".bmp", ".gif"))])
     pool.close()
 
-    for bitrate, psnr in data:
-        sz = len(bitrate)
+    for filesize, psnr in data:
+        sz = len(filesize)
         p25 = sz // 4
         p50 = sz // 2
         p75 = 3 * sz // 4
 
-        plt.plot(bitrate[:p25+1], psnr[:p25+1], color="midnightblue")
-        plt.plot(bitrate[p25:p50+1], psnr[p25:p50+1], color="mediumblue")
-        plt.plot(bitrate[p50:p75+1], psnr[p50:p75+1], color="dodgerblue")
-        plt.plot(bitrate[p75:], psnr[p75:], color="skyblue")
+        plt.plot(filesize[:p25+1], psnr[:p25+1], color="midnightblue")
+        plt.plot(filesize[p25:p50+1], psnr[p25:p50+1], color="mediumblue")
+        plt.plot(filesize[p50:p75+1], psnr[p50:p75+1], color="dodgerblue")
+        plt.plot(filesize[p75:], psnr[p75:], color="skyblue")
+
+    plt.axvline(x=150/len(data))
 
 
 def plot_q(directory, estimator, quality, point_color="r"):
-    """Plots bitrate-PSNR at fixed quality for all images in directory."""
+    """Plots filesize-PSNR at fixed quality for all images in directory."""
     for filename in os.listdir(directory):
         if not filename.lower().endswith((".png", ".jpg", ".jpeg", ".tiff", ".bmp", ".gif")):
             continue
@@ -56,9 +56,8 @@ def plot_q(directory, estimator, quality, point_color="r"):
             q = quality[i]
 
         sz, psnr = process_q(filename, q, method, estimator)
-        im = Image.open(filename)
-        bitrate = sz / (im.size[0] * im.size[1])
-        plt.plot(bitrate, psnr, ".", color=point_color)
+        filesize = sz / 1024  # in kilobyte(s)
+        plt.plot(filesize, psnr, ".", color=point_color)
 
 
 def main():
@@ -83,15 +82,15 @@ def main():
     print("Multi completed.")
 
     if quality is not None:
-        plot_q(directory, estimator, quality, "orange")
+        plot_q(directory, estimator, quality, "r")
 
     if args.multi_quality:
         print("List of quality values:")
         multi_quality = list(map(int, input().split()))
-        plot_q(directory, estimator, multi_quality, "r")
+        plot_q(directory, estimator, multi_quality, "orange")
 
     plt.title(directory)
-    plt.xlabel("Bitrate")
+    plt.xlabel("filesize (kB)")
     plt.ylabel(estimator.upper())
     plt.savefig("{}.png".format(directory))
     plt.show()

@@ -23,16 +23,16 @@ def process_q(filename, q, m, estimator):
     return int(sz), float(psnr)
 
 
-def process_m(filename, m, pixel_count, estimator):
+def process_m(filename, m, estimator):
     """Returns the list of file sizes and PSNR values for 
     compression method m.
     """
-    bitrate, psnr = [], []
+    filesize, psnr = [], []
     for q in range(0, 101, 5):
         _size, _psnr = process_q(filename, q, m, estimator)
-        bitrate.append(_size / pixel_count)
+        filesize.append(_size / 1024)  # in kilobyte(s)
         psnr.append(_psnr)
-    return bitrate, psnr
+    return filesize, psnr
 
 
 def main():
@@ -42,16 +42,13 @@ def main():
         assert sys.argv[2] in ["psnr", "ssim"], "Invalid estimator."
         estimator = sys.argv[2]
 
-    im = Image.open(filename)
-    w, h = im.size
     methods = [0, 2, 4, 6]
-
     for m in methods:
-        bitrate, psnr = process_m(filename, m, w * h, estimator)
-        plt.plot(bitrate, psnr, label="m={}".format(m))
+        filesize, psnr = process_m(filename, m, estimator)
+        plt.plot(filesize, psnr, label="m={}".format(m))
 
     plt.legend(loc="lower right")
-    plt.xlabel("Bitrate")
+    plt.xlabel("filesize (kB)")
     plt.ylabel(estimator.upper())
     plt.show()
 
